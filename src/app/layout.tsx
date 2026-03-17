@@ -15,8 +15,27 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'GestorPro — Inventario y Nómina',
-  description: 'Sistema de gestión de inventario y nómina para construcción',
+  title: 'GestorPro — Sistema de Gestión Empresarial',
+  description: 'Plataforma de control de inventario y nómina para empresas',
+  metadataBase: new URL('https://gestorpro.paulabad.tech'),
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/apple-touch-icon.svg',
+  },
+  openGraph: {
+    title: 'GestorPro — Sistema de Gestión Empresarial',
+    description: 'Control de inventario, nómina y operación desde cualquier dispositivo',
+    url: 'https://gestorpro.paulabad.tech',
+    siteName: 'GestorPro',
+    locale: 'es_CO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'GestorPro',
+    description: 'Control de inventario y nómina para empresas',
+  },
 }
 
 export default function RootLayout({
