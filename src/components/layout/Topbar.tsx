@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { Bell, Menu } from 'lucide-react'
+import Image from 'next/image'
 
 const routeTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -10,6 +11,7 @@ const routeTitles: Record<string, string> = {
   '/payroll/liquidation': 'Liquidación de Nómina',
   '/payroll/workers': 'Trabajadores',
   '/payroll/attendance': 'Asistencia',
+  '/payroll/novelties': 'Novedades',
 }
 
 function getTitle(pathname: string): string {
@@ -38,6 +40,8 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         >
           <Menu className="w-5 h-5" />
         </button>
+        {/* Logo — mobile only */}
+        <Image src="/logo.svg" width={24} height={24} alt="GestorPro" className="lg:hidden" />
 
         <h1 className="text-base sm:text-lg font-semibold text-gray-800">{title}</h1>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
@@ -9,7 +10,7 @@ import {
   HardHat,
   CalendarCheck,
   Banknote,
-  Leaf,
+  FileText,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -32,6 +33,7 @@ const navSections = [
     items: [
       { href: '/payroll/workers', label: 'Trabajadores', icon: HardHat },
       { href: '/payroll/attendance', label: 'Asistencia', icon: CalendarCheck },
+      { href: '/payroll/novelties', label: 'Novedades', icon: FileText },
       { href: '/payroll/liquidation', label: 'Liquidación', icon: Banknote },
     ],
   },
@@ -51,12 +53,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
     >
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-        <div
-          className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
-          style={{ backgroundColor: '#22c55e' }}
-        >
-          <Leaf className="w-5 h-5 text-white" />
-        </div>
+        <Image src="/logo.svg" width={32} height={32} alt="GestorPro" className="shrink-0" />
         <span className="text-white font-bold text-lg tracking-tight">GestorPro</span>
       </div>
 

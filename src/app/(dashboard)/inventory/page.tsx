@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { Eye } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import ProductDialog, { EditProductButton } from '@/components/inventory/ProductDialog'
+import ProductDialog, { EditProductButton, DeleteProductButton } from '@/components/inventory/ProductDialog'
 import type { Product, Category } from '@/lib/types/database'
 import { formatCurrency } from '@/lib/utils'
 
@@ -91,10 +89,8 @@ export default async function InventoryPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
-                          <Button variant="ghost" size="icon-sm" title="Ver detalle">
-                            <Eye className="w-3.5 h-3.5" />
-                          </Button>
                           <EditProductButton product={product} categories={cats} />
+                          <DeleteProductButton product={product} />
                         </div>
                       </td>
                     </tr>

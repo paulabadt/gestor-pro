@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
-import { Save, Users, UserCheck, UserX } from 'lucide-react'
+import { Save, Users, UserCheck, UserX, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -58,6 +58,7 @@ export default function AttendancePage() {
   const [rows, setRows] = useState<AttendanceRow[]>([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   // Load projects
   useEffect(() => {
@@ -126,6 +127,25 @@ export default function AttendancePage() {
     setRows((prev) =>
       prev.map((r) => (r.worker_id === workerId ? { ...r, [field]: value } : r))
     )
+  }
+
+  async function handleClear(workerId: string, existingId: string | null) {
+    if (!existingId) return
+    setDeletingId(workerId)
+    const { error } = await supabase.from('attendance').delete().eq('id', existingId)
+    setDeletingId(null)
+    if (error) {
+      toast.error('Error al limpiar el registro', { description: error.message })
+      return
+    }
+    setRows((prev) =>
+      prev.map((r) =>
+        r.worker_id === workerId
+          ? { ...r, status: 'present', overtime_hours: 0, existingId: null }
+          : r
+      )
+    )
+    toast.success('Registro de asistencia eliminado')
   }
 
   async function handleSave() {
@@ -241,6 +261,7 @@ export default function AttendancePage() {
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Cargo</th>
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Estado</th>
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Horas extra</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -280,6 +301,18 @@ export default function AttendancePage() {
                         />
                         <span className="text-xs text-gray-400">h</span>
                       </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Limpiar registro"
+                        disabled={!row.existingId || deletingId === row.worker_id}
+                        onClick={() => handleClear(row.worker_id, row.existingId)}
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-30"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </td>
                   </tr>
                 ))}

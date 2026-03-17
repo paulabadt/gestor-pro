@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Phone, FolderOpen } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import WorkerDialog, { EditWorkerButton } from '@/components/payroll/WorkerDialog'
+import WorkerDialog, { EditWorkerButton, DeleteWorkerButton } from '@/components/payroll/WorkerDialog'
 import type { Worker, Project } from '@/lib/types/database'
 import { formatCurrency } from '@/lib/utils'
 
@@ -85,7 +85,10 @@ export default async function WorkersPage() {
                     <p className="font-semibold text-gray-900 truncate">{worker.name}</p>
                     <p className="text-xs text-gray-400 mt-0.5">C.C. {worker.id_number}</p>
                   </div>
-                  <EditWorkerButton worker={worker} projects={proj} />
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <EditWorkerButton worker={worker} projects={proj} />
+                    <DeleteWorkerButton worker={worker} />
+                  </div>
                 </div>
 
                 {/* Badges */}

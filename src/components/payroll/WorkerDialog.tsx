@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Plus, Pencil } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Worker, Project } from '@/lib/types/database'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -278,6 +279,52 @@ export function EditWorkerButton({
         <Pencil className="w-3.5 h-3.5" />
       </Button>
       <WorkerDialog worker={worker} projects={projects} open={open} onOpenChange={setOpen} />
+    </>
+  )
+}
+
+export function DeleteWorkerButton({ worker }: { worker: Worker }) {
+  const router = useRouter()
+  const supabase = createClient()
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  async function handleDelete() {
+    setLoading(true)
+    await Promise.all([
+      supabase.from('attendance').delete().eq('worker_id', worker.id),
+      supabase.from('novelties').delete().eq('worker_id', worker.id),
+    ])
+    const { error } = await supabase.from('workers').delete().eq('id', worker.id)
+    setLoading(false)
+    if (error) {
+      toast.error('Error al eliminar el trabajador', { description: error.message })
+      return
+    }
+    toast.success('Trabajador eliminado correctamente')
+    setOpen(false)
+    router.refresh()
+  }
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => setOpen(true)}
+        title="Eliminar"
+        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </Button>
+      <ConfirmDialog
+        isOpen={open}
+        title="Eliminar trabajador"
+        message="¿Estás seguro de eliminar este trabajador? Se eliminarán también sus registros de asistencia y novedades."
+        onConfirm={handleDelete}
+        onCancel={() => setOpen(false)}
+        confirmLabel={loading ? 'Eliminando…' : 'Eliminar'}
+      />
     </>
   )
 }

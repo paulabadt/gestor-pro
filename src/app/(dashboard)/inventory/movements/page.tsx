@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import MovementForm from '@/components/inventory/MovementForm'
+import MovementDetailButton from '@/components/inventory/MovementDetailButton'
+import type { MovementDetail } from '@/components/inventory/MovementDetailButton'
 
 function formatDate(dateStr: string) {
   return new Intl.DateTimeFormat('es-CL', {
@@ -76,12 +78,13 @@ export default async function MovementsPage() {
                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Motivo</th>
                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">Referencia</th>
                 <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Responsable</th>
+                <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-gray-400">
+                  <td colSpan={8} className="px-4 py-10 text-center text-gray-400">
                     No hay movimientos registrados. Registra el primero.
                   </td>
                 </tr>
@@ -115,6 +118,11 @@ export default async function MovementsPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
                         {movement.user_name ?? <span className="text-gray-300">—</span>}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end">
+                          <MovementDetailButton movement={movement as MovementDetail} />
+                        </div>
                       </td>
                     </tr>
                   )

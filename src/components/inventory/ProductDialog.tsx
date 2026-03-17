@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Plus, Pencil } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Category, Product } from '@/lib/types/database'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -288,6 +289,48 @@ export function EditProductButton({ product, categories }: { product: Product; c
         categories={categories}
         open={open}
         onOpenChange={setOpen}
+      />
+    </>
+  )
+}
+
+export function DeleteProductButton({ product }: { product: Product }) {
+  const router = useRouter()
+  const supabase = createClient()
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  async function handleDelete() {
+    setLoading(true)
+    const { error } = await supabase.from('products').delete().eq('id', product.id)
+    setLoading(false)
+    if (error) {
+      toast.error('Error al eliminar el producto', { description: error.message })
+      return
+    }
+    toast.success('Producto eliminado correctamente')
+    setOpen(false)
+    router.refresh()
+  }
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => setOpen(true)}
+        title="Eliminar"
+        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </Button>
+      <ConfirmDialog
+        isOpen={open}
+        title="Eliminar producto"
+        message="¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer."
+        onConfirm={handleDelete}
+        onCancel={() => setOpen(false)}
+        confirmLabel={loading ? 'Eliminando…' : 'Eliminar'}
       />
     </>
   )
